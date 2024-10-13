@@ -58,22 +58,6 @@ app.post("/login", async (req, res) => {
 });
 
 //>-------------------------------------------------------------<
-
-app.post("/criar-conta", (req, res) => {
-  const { nome, email, senha } = req.body;
-
-  if (!nome || !email || !senha) {
-    return res.status(400).send("Todos os campos são obrigatórios!");
-  }
-
-  const novoUsuario = { id: users.length + 1, nome, email, senha };
-  users.push(novoUsuario);
-
-  res.status(201).send(novoUsuario);
-});
-
-
-//>-------------------------------------------------------------------<
 app.post("/messages", (req, res) => {
   const {título, descrição, email} = req.body;
 
@@ -85,7 +69,7 @@ app.post("/messages", (req, res) => {
   }   
   const id = Math.floor(Math.random() * 1000 ) + 1;
 
-  const novaMessage = (id, título, descrição, email);
+  const novaMessage = {id, título, descrição, email};
   message.push(novaMessage);
     return res.status(201).json({message:"Mensagem criada com sucesso!", novaMessage});
   
@@ -115,39 +99,37 @@ app.get("/messages", async (req, res) => {
 
 //>-----------------------------------------------------------<
 
-app.put("/mensagem/:id", (req, res) => {
+app.put("/messages/:id", (req, res) => {
   const { id } = req.params;
   const { título, descrição } = req.body;
 
-  if (!title || !description) {
+  if (!título || !descrição) {
     return res.status(400).json({
       error: "Por favor, verifique se passou todos os dados necessários.",
     });
   }
 
-  const mensagem = mensagens.find((mensagem) => mensagem.id === parseInt(id));
+  const messages = message.find((message) => message.id === parseInt(id));
 
-  if (!mensagem) {
+  if (!messages) {
     return res.status(404).json({
       error: "Mensagem não encontrada, verifique o id.",
     });
   }
 
-  mensagem.title = title;
-  mensagem.description = description;
+  message.título = título;
+  message.descrição = descrição;
 
   return res.status(200).send({
-    mensagem: `Mensagem atualizada com sucesso!`,
-    updatedMensagem: mensagem,
+    message: `Mensagem atualizada com sucesso!`,
+    updatedMessage: message,
   });
 });
-
 //>-------------------------------------------------------------------<
-
-app.delete("/mensagem/:id", (req, res) => {
+app.delete("/messages/:id", (req, res) => {
   const { id } = req.params;
 
-  const mensagemIndex = mensagens.findIndex(
+  const mensagemIndex = message.findIndex(
     (mensagem) => mensagem.id === parseInt(id)
   );
 
@@ -157,7 +139,7 @@ app.delete("/mensagem/:id", (req, res) => {
     });
   }
 
-  mensagens.splice(mensagemIndex, 1);
+  message.splice(mensagemIndex, 1);
 
   return res.status(200).send({ mensagem: "Mensagem apagada com sucesso" });
 });
